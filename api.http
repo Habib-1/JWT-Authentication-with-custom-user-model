@@ -13,10 +13,10 @@ POST http://127.0.0.1:8000/register/
 Content-Type: application/json
 
 {
-    "email": "habib2@gmail.com",
-    "first_name": "Habib",
+    "email": "rashed@gmail.com",
+    "first_name": "Rashed",
     "last_name": "Rahman",
-    "phone_number": "01700000000",
+    "phone_number": "01735123635",
     "password": "19thOct2000",
     "password2": "19thOct2000"
 }

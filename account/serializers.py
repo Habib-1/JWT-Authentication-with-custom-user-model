@@ -3,6 +3,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 User=get_user_model()
+from .models import EmailOTP
+from django.utils import timezone
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True,validators=[validate_password])
@@ -51,3 +53,46 @@ class ProfileSerializer(serializers.ModelSerializer):
         model=User
         fields=("email","first_name","last_name","phone","role","is_verified")
         read_only_fields=("email","role","is_verified")
+
+
+class EmailVerifySerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    otp = serializers.CharField(max_length=6)
+
+    def validate(self, attrs):
+        email = attrs["email"]
+        otp = attrs["otp"]
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            raise serializers.ValidationError(
+                {"email": "Invalid email."}
+            )
+
+        if user.is_verified:
+            raise serializers.ValidationError(
+                {"email": "This account is already verified."}
+            )
+
+        try:
+            email_otp = EmailOTP.objects.get(
+                user=user,
+                otp=otp
+            )
+        except EmailOTP.DoesNotExist:
+            raise serializers.ValidationError(
+                {"otp": "Invalid OTP."}
+            )
+
+        if email_otp.expires_at < timezone.now():
+            email_otp.delete()
+
+            raise serializers.ValidationError(
+                {"otp": "OTP has expired."}
+            )
+
+        attrs["user"] = user
+        attrs["email_otp"] = email_otp
+
+        return attrs

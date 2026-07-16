@@ -3,11 +3,12 @@ from django.contrib.auth import get_user_model
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializers import RegisterSerializer,CustomTokenObtainPairSerializer,PasswordChangeSerializer,ProfileSerializer
+from .serializers import RegisterSerializer,CustomTokenObtainPairSerializer,PasswordChangeSerializer,ProfileSerializer,EmailVerifySerializer
 from rest_framework.permissions import AllowAny,IsAdminUser,IsAuthenticated
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
+from .utils import send_verification_email,genarate_email_otp
 # Create your views here.
 User=get_user_model()
 
@@ -15,6 +16,12 @@ class RegisterView(generics.CreateAPIView):
     queryset=User.objects.all()
     serializer_class=RegisterSerializer
     permission_classes=[AllowAny]
+
+    def perform_create(self, serializer):
+        user=serializer.save()
+        otp=genarate_email_otp(user=user)
+        send_verification_email(user=user,otp=otp)
+
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -61,3 +68,23 @@ class ProfileView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user
+    
+
+class EmailVerifyView(APIView):
+    permission_classes=[AllowAny]
+    def post(self,request):
+        serializer=EmailVerifySerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user=serializer.validated_data['user']
+        email_otp = serializer.validated_data["email_otp"]
+
+        user.is_verified = True 
+        user.save(update_fields=["is_verified"])
+
+        email_otp.delete()
+        
+        return Response( 
+            { "message": "Email verified successfully." }, 
+            status=status.HTTP_200_OK,
+             )

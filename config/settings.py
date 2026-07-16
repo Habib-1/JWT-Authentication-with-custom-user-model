@@ -178,5 +178,6 @@ SIMPLE_JWT = {
 #     "CHECK_USER_IS_ACTIVE": True,
   }
 
-DEFAULT_FROM_EMAIL = "support.hr@gmail.com"
+# for console 
+DEFAULT_FROM_EMAIL = "hrhabib@gmail.com"
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

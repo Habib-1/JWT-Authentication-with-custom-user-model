@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User
+from .models import User,EmailOTP
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 # Register your models here.
 
@@ -31,3 +31,4 @@ class UserAdmin(BaseUserAdmin):
 
    
 admin.site.register(User,UserAdmin)
+admin.site.register(EmailOTP)
