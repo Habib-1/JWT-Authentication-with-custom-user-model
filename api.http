@@ -1,0 +1,73 @@
+POST http://127.0.0.1:8000/login/
+Content-Type : application/json
+
+{
+    "email": "habib@gmail.com",
+    "password": "Kaniz123"
+}
+
+###
+
+
+POST http://127.0.0.1:8000/register/
+Content-Type: application/json
+
+{
+    "email": "habib2@gmail.com",
+    "first_name": "Habib",
+    "last_name": "Rahman",
+    "phone_number": "01700000000",
+    "password": "19thOct2000",
+    "password2": "19thOct2000"
+}
+
+###
+
+POST http://127.0.0.1:8000/logout/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg0MTgwMzcxLCJpYXQiOjE3ODQxODAwNzEsImp0aSI6IjVlYTllNmY0MmRhNDQzZjFiZTg2NmUwNmJjZDlhMDI4IiwidXNlcl9pZCI6IjIifQ.XoZ4wiNKAqoPZCDH004lB-vgUIMIR4TnwzlfpR9LMMQ
+
+{
+    "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4NDI2NjQ3MSwiaWF0IjoxNzg0MTgwMDcxLCJqdGkiOiI3OTNjYTg5NTA4MzA0ODY3YTM4YTc3ZGE0ZTE3ODcyOSIsInVzZXJfaWQiOiIyIn0.cYTWb1xKlSMikWYWMI6XRpDc6T10cfosu1HZVrnCmT0"
+}
+
+###
+
+POST http://127.0.0.1:8000/token/refresh/
+Content-Type: application/json
+
+{
+    "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg0MTg1ODA0LCJpYXQiOjE3ODQxODU1MDQsImp0aSI6IjE5MjY1ZjRmN2RjYjQyYmM4OTZjNDhjY2MzZmYxOTRkIiwidXNlcl9pZCI6IjIifQ.u7zGVeb4Emj7o63HaN0GsDXLbyahk_1lkoST8hIBqGY"
+}
+
+
+###
+
+POST http://127.0.0.1:8000/password-change/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg0MTg0NjM0LCJpYXQiOjE3ODQxODQzMzQsImp0aSI6IjQ2YjVhMzdhYTE1YjQ1M2U4NzA2ZDY4MTJjMTVmN2ViIiwidXNlcl9pZCI6IjIifQ.p8UjEC09PmvE2r3ClyN4iPKCRc1XHz2dBi9g3y8Oq3U
+
+{
+    "old_password":"admin123",
+    "new_password":"Kaniz123"
+}
+
+###
+
+PUT http://127.0.0.1:8000/profile/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg0MTg2MTkzLCJpYXQiOjE3ODQxODU4OTMsImp0aSI6IjZiZjFmM2NlNmQ5MTQyZDM5YjI4NDIyZTVmZWQwMjhhIiwidXNlcl9pZCI6IjIifQ.1Z9Y5kyY9cNGh2a9K-xBbDTl5NxTtpfBX777mMFjOA8
+
+{
+  
+    "first_name": "Habibur",
+    "last_name": "Biswas",
+    "phone": "01995103632"
+
+}
+
+
+###
+GET http://127.0.0.1:8000/profile/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg0MTg2MTkzLCJpYXQiOjE3ODQxODU4OTMsImp0aSI6IjZiZjFmM2NlNmQ5MTQyZDM5YjI4NDIyZTVmZWQwMjhhIiwidXNlcl9pZCI6IjIifQ.1Z9Y5kyY9cNGh2a9K-xBbDTl5NxTtpfBX777mMFjOA8
