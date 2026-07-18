@@ -13,16 +13,40 @@ POST http://127.0.0.1:8000/register/
 Content-Type: application/json
 
 {
-    "email": "rashed@gmail.com",
-    "first_name": "Rashed",
+    "email": "kaniz@gmail.com",
+    "first_name": "Kaniz",
     "last_name": "Rahman",
-    "phone_number": "01735123635",
+    "phone_number": "01735123637",
     "password": "19thOct2000",
     "password2": "19thOct2000"
 }
+###
+POST http://127.0.0.1:8000/email-verify/
+Content-Type: application/json
+
+{ 
+    "email": "admin@gmail.com", 
+    "otp": "816248" 
+    }
+###
+POST http://127.0.0.1:8000/resend-otp/
+Content-Type: application/json
+
+{ 
+    "email": "admin@gmail.com"
+    
+    }
+
 
 ###
+POST http://127.0.0.1:8000/password-reset/
+Content-Type: application/json
 
+    { 
+        "email": "admin@gmail.com"
+    
+    }
+### 
 POST http://127.0.0.1:8000/logout/
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg0MTgwMzcxLCJpYXQiOjE3ODQxODAwNzEsImp0aSI6IjVlYTllNmY0MmRhNDQzZjFiZTg2NmUwNmJjZDlhMDI4IiwidXNlcl9pZCI6IjIifQ.XoZ4wiNKAqoPZCDH004lB-vgUIMIR4TnwzlfpR9LMMQ

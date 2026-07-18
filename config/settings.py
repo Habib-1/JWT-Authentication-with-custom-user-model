@@ -179,5 +179,6 @@ SIMPLE_JWT = {
   }
 
 # for console 
+FRONTEND_URL='http://127.0.0.1:8000/'
 DEFAULT_FROM_EMAIL = "hrhabib@gmail.com"
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

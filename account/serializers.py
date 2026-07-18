@@ -6,6 +6,11 @@ User=get_user_model()
 from .models import EmailOTP
 from django.utils import timezone
 
+
+from django.utils.encoding import force_str
+from django.utils.http import urlsafe_base64_decode
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True,validators=[validate_password])
     password2 = serializers.CharField(write_only=True,)
@@ -96,3 +101,72 @@ class EmailVerifySerializer(serializers.Serializer):
         attrs["email_otp"] = email_otp
 
         return attrs
+
+
+class ResendOTPSerializer(serializers.Serializer):
+    email=serializers.EmailField()
+
+    def validate(self, attrs):
+        email=attrs['email']
+
+        try:
+            user=User.objects.get(email=email)
+        except User.DoesNotExist:
+            raise serializers.ValidationError({"email":"No account found with this email."})
+        
+        if user.is_verified:
+            raise serializers.ValidationError({"email":"This account is already verified."})
+        
+        attrs['user']=user
+
+        return attrs
+
+class PasswordResetrequestSerializer(serializers.Serializer):
+    email=serializers.EmailField()
+
+    def validate(self,attrs):
+        email=attrs['email']
+
+        try:
+            user=User.objects.get(email=email)
+        except User.DoesNotExist:
+            raise serializers.ValidationError({"email":"No account found with this email."})
+        
+        if not user.is_verified:
+            raise serializers.ValidationError({
+                "email": "Please verify your email before resetting your password."
+            })
+        attrs['user']=user
+
+        return attrs
+    
+
+class PasswordResetConfirmSerializer(serializers.Serializer):
+    uid=serializers.CharField()
+    token=serializers.CharField()
+    password=serializers.CharField(write_only=True, validators=[validate_password])
+    password2=serializers.CharField(write_only=True)
+
+    def validate(self,attrs):
+        if attrs['password'] != attrs['password2'] :
+            raise serializers.ValidationError(
+                {"password":"Password do not match"}
+            )
+        try:
+            user_id=force_str(
+                urlsafe_base64_decode(attrs["uid"])
+            )
+            user=User.objects.get(pk=user_id)
+
+        except Exception:
+           raise serializers.ValidationError({"uid": "Invalid reset link."})
+        
+        token=attrs["token"]
+
+        if not PasswordResetTokenGenerator().check_token(user,token):
+            raise serializers.ValidationError({"token": "Invalid or expired token."})
+        
+        attrs['user']=user
+
+        return attrs
+        

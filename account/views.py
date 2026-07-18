@@ -3,12 +3,12 @@ from django.contrib.auth import get_user_model
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializers import RegisterSerializer,CustomTokenObtainPairSerializer,PasswordChangeSerializer,ProfileSerializer,EmailVerifySerializer
+from .serializers import RegisterSerializer,CustomTokenObtainPairSerializer,PasswordChangeSerializer,ProfileSerializer,EmailVerifySerializer,ResendOTPSerializer,PasswordResetrequestSerializer,PasswordResetConfirmSerializer
 from rest_framework.permissions import AllowAny,IsAdminUser,IsAuthenticated
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
-from .utils import send_verification_email,genarate_email_otp
+from .utils import send_verification_email,genarate_email_otp,send_password_reset_email
 # Create your views here.
 User=get_user_model()
 
@@ -88,3 +88,44 @@ class EmailVerifyView(APIView):
             { "message": "Email verified successfully." }, 
             status=status.HTTP_200_OK,
              )
+
+class ResendOTPView(APIView):
+    permission_classes=[AllowAny]
+
+    def post(self,request):
+        serializer=ResendOTPSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user=serializer.validated_data['user']
+        otp=genarate_email_otp(user=user)
+        send_verification_email(user=user,otp=otp)
+
+        return Response(
+            {"message": "A new OTP has been sent to your email." },
+            status=status.HTTP_200_OK,
+            )
+    
+class PasswordResetRequestView(APIView):
+    permission_classes=[AllowAny]
+
+    def post(self,request):
+        serializer=PasswordResetrequestSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user=serializer.validated_data['user']
+        send_password_reset_email(user)
+
+        return Response({"message": "Password reset link has been sent to your email."},status=status.HTTP_200_OK)
+
+
+class PasswordResetConfirmView(APIView):
+    permission_classes=[AllowAny]
+    def post(self,request):
+        serializer=PasswordResetConfirmSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user=serializer.validated_data['user']
+        password=serializer.validated_data['password']
+        user.set_password(password)
+        user.save(update_fields=["password"])
+        return Response(
+            {"message": "Password has been reset successfully."},
+            status=status.HTTP_200_OK,
+        )
